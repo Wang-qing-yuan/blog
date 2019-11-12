@@ -22,5 +22,9 @@ public class JSoupDemo {
             Element wrapDiv = div.child(0).child(0).child(1);
             System.out.println(wrapDiv.text());
         });
+
+        System.out.println(JSoupSpider.getBooks().size());
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.myvlog.util;
 
+import com.myvlog.entity.Book;
 import com.myvlog.entity.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author mq_xu
@@ -41,6 +43,7 @@ public class JSoupSpider {
                 user.setMobile(DataUtil.getMobile());
                 user.setPassword(DataUtil.getPassword());
                 user.setGender(DataUtil.getGender());
+
                 user.setAvatar("https:" + linkChildren.get(0).attr("src"));
                 user.setNickname(linkChildren.get(1).text());
                 user.setIntroduction(linkChildren.get(2).text());
@@ -51,4 +54,45 @@ public class JSoupSpider {
         }
         return userList;
     }
+
+    public static List<Book> getBooks() {
+        Document document = null;
+        List<Book> bookList = new ArrayList<>(100);
+        int j = 0;
+        for (int i = 0; i <= 180; ) {
+            try {
+                document = Jsoup.connect("https://book.douban.com/review/best/?start=" + i).get();
+            } catch (IOException e) {
+                logger.info("连接失败");
+            }
+            Elements cards = document.getElementsByClass("main review-item");
+            cards.forEach(card -> {
+                Element img = card.child(0).child(0);
+                Element name = card.child(1).child(1);
+                Element title = card.child(2).child(0);
+                Element content = card.child(2).child(1).child(0);
+                Element like = card.child(2).child(3).child(0).child(1);
+//                String publishTime =null;
+//                Element publishTime = card.child(1).child(2).text();
+                int n = card.child(1).children().size()-1;
+                Element data = card.child(1).child(n);
+                Book book = new Book();
+                book.setTitle(title.text());
+                book.setContent(content.text());
+                book.setCover(img.attr("src"));
+                book.setDiamond(new Random().nextInt(100));
+                book.setNickname(name.text());
+                book.setComments(new Random().nextInt(100));
+                book.setLikes(Integer.valueOf(like.text()));
+//                book.setPublishTime(Timestamp.valueOf(publishTime).toLocalDateTime());
+                bookList.add(book);
+            });
+            j++;
+            i = j * 2 * 10;
+        }
+        return bookList;
+    }
+
+
+   
 }

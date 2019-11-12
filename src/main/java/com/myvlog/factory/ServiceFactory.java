@@ -9,7 +9,5 @@ public class ServiceFactory {
     public static StudentService getStudentServiceInstance(){
         return new StudentServiceImpl();
     }
-    public static UserService getUserServiceInstance(){
-        return new UserServiceImpl();
-    }
+    public static UserService getUserServiceInstance(){ return new UserServiceImpl(); }
 }

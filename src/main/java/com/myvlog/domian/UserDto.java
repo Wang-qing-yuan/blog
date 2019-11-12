@@ -5,6 +5,7 @@ import lombok.Data;
 /**
  * @Description 用户传输对象
  */
+
 @Data
 public class UserDto {
     private String mobile;
